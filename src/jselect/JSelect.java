@@ -20,12 +20,20 @@ public class JSelect {
     opt.setArgName("url");
     opt.setRequired(true);
     options.addOption(opt);
+    opt = new Option("s", "selector", true, "CSS-style selector");
+    opt.setArgName("selector");
+    opt.setRequired(true);
+    options.addOption(opt);
+    opt = new Option("a", "attribute", true, "attribute name");
+    opt.setArgName("name");
+    options.addOption(opt);
     usage(options);
   }
 
   private void usage(Options options) {
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("jselect version " + version, options);
+    System.out.println("jselect version " + version);
+    formatter.printHelp("jselect", options);
   }
   
   private void loadProperties() {
