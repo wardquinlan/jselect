@@ -17,6 +17,10 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class JSelect {
   private static Log log = LogFactory.getFactory().getInstance(JSelect.class);
@@ -47,11 +51,20 @@ public class JSelect {
     
     String url = cmd.getOptionValue("url");
     String selector = cmd.getOptionValue("selector");
+    //Document doc = Jsoup.connect(url).get();
     String content = readContent(url);
-    if (content == null) {
+    Document doc = Jsoup.parse(content);
+    Elements elements = doc.select(selector);
+    if (elements.size() == 0) {
+      log.error("element not found for selector " + selector);
       System.exit(1);
     }
-    
+    if (elements.size() > 1) {
+      log.error("multiple elements found for selector " + selector);
+      System.exit(1);
+    }
+    Element element = elements.get(0);
+    System.out.println("*");
     //usage(options);
   }
 
