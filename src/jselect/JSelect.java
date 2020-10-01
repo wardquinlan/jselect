@@ -8,9 +8,13 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,7 +36,18 @@ public class JSelect {
     opt = new Option("a", "attribute", true, "attribute name");
     opt.setArgName("name");
     options.addOption(opt);
-    String content = readContent("https://web.tmxmoney.com/quote.php");
+    CommandLine cmd = null;
+    try {
+      CommandLineParser parser = new DefaultParser();
+      cmd = parser.parse(options, args);
+    } catch(ParseException e) {
+      usage(options);
+      System.exit(1);
+    }
+    
+    String url = cmd.getOptionValue("url");
+    String selector = cmd.getOptionValue("selector");
+    String content = readContent(url);
     if (content == null) {
       System.exit(1);
     }
