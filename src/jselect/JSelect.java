@@ -40,6 +40,9 @@ public class JSelect {
     opt = new Option("a", "attribute", true, "attribute name");
     opt.setArgName("name");
     options.addOption(opt);
+    opt = new Option("e", "echo-content", false, "echo HTML content to stdout");
+    opt.setArgName("name");
+    options.addOption(opt);
     CommandLine cmd = null;
     try {
       CommandLineParser parser = new DefaultParser();
@@ -51,8 +54,7 @@ public class JSelect {
     
     String url = cmd.getOptionValue("url");
     String selector = cmd.getOptionValue("selector");
-    //Document doc = Jsoup.connect(url).get();
-    String content = readContent(url);
+    String content = readContent(url, cmd.hasOption("echo-content"));
     Document doc = Jsoup.parse(content);
     Elements elements = doc.select(selector);
     if (elements.size() == 0) {
@@ -68,7 +70,7 @@ public class JSelect {
     //usage(options);
   }
 
-  private String readContent(String url) {
+  private String readContent(String url, boolean echo) {
     BufferedReader reader = null;
     try {
       URL myurl = new URL(url);
@@ -78,7 +80,10 @@ public class JSelect {
       String line;
       StringBuffer sb = new StringBuffer();
       while ((line = reader.readLine()) != null) {
-          sb.append(line);
+        if (echo) {
+          System.out.println(line);
+        }
+        sb.append(line);
       }
       return sb.toString();
     } catch(Exception e) {

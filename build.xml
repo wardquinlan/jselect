@@ -16,6 +16,7 @@
     <pathelement location="${lib}/log4j-1.2.14.jar"/>
   	<pathelement location="${lib}/commons-cli-1.4.jar"/>
   	<pathelement location="${lib}/commons-lang3-3.10.jar"/>
+  	<pathelement location="${lib}/jsoup-1.13.1.jar"/>
   </path>
 
   <target name="init">
