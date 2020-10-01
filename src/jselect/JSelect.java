@@ -18,6 +18,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -66,8 +68,11 @@ public class JSelect {
       System.exit(1);
     }
     Element element = elements.get(0);
-    System.out.println("*");
-    //usage(options);
+    if (cmd.hasOption("attribute")) {
+      System.out.println(element.attributes().get(cmd.getOptionValue("attribute")));
+    } else {
+      System.out.println(element.text());
+    }
   }
 
   private String readContent(String url, boolean echo) {
