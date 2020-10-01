@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -18,8 +19,6 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -79,8 +78,14 @@ public class JSelect {
     BufferedReader reader = null;
     try {
       URL myurl = new URL(url);
-      HttpsURLConnection connection = (HttpsURLConnection) myurl.openConnection();
-      InputStream stream = connection.getInputStream();
+      InputStream stream;
+      if (url.startsWith("https")) {
+        HttpsURLConnection connection = (HttpsURLConnection) myurl.openConnection();
+        stream = connection.getInputStream();
+      } else {
+        HttpURLConnection connection = (HttpURLConnection) myurl.openConnection();
+        stream = connection.getInputStream();
+      }
       reader = new BufferedReader(new InputStreamReader(stream));
       String line;
       StringBuffer sb = new StringBuffer();
