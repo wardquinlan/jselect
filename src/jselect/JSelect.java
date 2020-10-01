@@ -1,7 +1,12 @@
 package jselect;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
@@ -27,9 +32,40 @@ public class JSelect {
     opt = new Option("a", "attribute", true, "attribute name");
     opt.setArgName("name");
     options.addOption(opt);
-    usage(options);
+    String content = readContent("https://web.tmxmoney.com/quote.php");
+    if (content == null) {
+      System.exit(1);
+    }
+    
+    //usage(options);
   }
 
+  private String readContent(String url) {
+    BufferedReader reader = null;
+    try {
+      URL myurl = new URL(url);
+      HttpsURLConnection connection = (HttpsURLConnection) myurl.openConnection();
+      InputStream stream = connection.getInputStream();
+      reader = new BufferedReader(new InputStreamReader(stream));
+      String line;
+      StringBuffer sb = new StringBuffer();
+      while ((line = reader.readLine()) != null) {
+          sb.append(line);
+      }
+      return sb.toString();
+    } catch(Exception e) {
+      log.error("unable to read content", e);
+      return null;
+    } finally {
+      if (reader != null) {
+        try {
+          reader.close();
+        } catch(Exception e) {
+        }
+      }
+    }
+  }
+  
   private void usage(Options options) {
     HelpFormatter formatter = new HelpFormatter();
     System.out.println("jselect version " + version);
