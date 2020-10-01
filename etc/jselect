@@ -14,4 +14,4 @@ CLASSPATH=$CLASSPATH:$JSELECT_HOME/jselect.d/commons-lang3-3.10.jar
 CLASSPATH=$CLASSPATH:$JSELECT_HOME/jselect.d/postgresql-9.3-1104.jdbc41.jar
 CLASSPATH=$CLASSPATH:$JSELECT_HOME/jselect.d/jsoup-1.13.1.jar
 CMD="$JAVA_HOME/bin/java -classpath $CLASSPATH -Xmx128m jselect.JSelect $@"
-eval $CMD
+$CMD
