@@ -54,7 +54,9 @@ public class JSelect {
     }
     
     String url = cmd.getOptionValue("url");
-    String selector = cmd.getOptionValue("selector");
+    log.debug("using url " + url);
+    String selector = cmd.getOptionValue("selector").replace("%20", " ");
+    log.debug("using selector " + selector);
     String content = readContent(url, cmd.hasOption("echo-content"));
     Document doc = Jsoup.parse(content);
     Elements elements = doc.select(selector);
