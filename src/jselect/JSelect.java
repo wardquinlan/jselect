@@ -42,7 +42,8 @@ public class JSelect {
     opt.setArgName("name");
     options.addOption(opt);
     opt = new Option("e", "echo-content", false, "echo HTML content to stdout");
-    opt.setArgName("name");
+    options.addOption(opt);
+    opt = new Option("f", "filter", false, "apply a numeric filter");
     options.addOption(opt);
     CommandLine cmd = null;
     try {
@@ -69,13 +70,29 @@ public class JSelect {
       System.exit(1);
     }
     Element element = elements.get(0);
+    String value;
     if (cmd.hasOption("attribute")) {
-      System.out.println(element.attributes().get(cmd.getOptionValue("attribute")));
+      value = element.attributes().get(cmd.getOptionValue("attribute"));
     } else {
-      System.out.println(element.text());
+      value = element.text();
     }
+    if (cmd.hasOption("filter")) {
+      value = filter(value);
+    }
+    System.out.println(value);
   }
 
+  private String filter(String value) {
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < value.length(); i++) {
+      char ch = value.charAt(i);
+      if ((ch >= '0' && ch <= '9') || ch == '.' || ch == '+' || ch == '-') {
+        sb.append(ch);
+      }
+    }
+    return sb.toString();
+  }
+  
   private String readContent(String url, boolean echo) {
     BufferedReader reader = null;
     try {
