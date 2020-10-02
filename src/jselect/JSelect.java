@@ -86,7 +86,7 @@ public class JSelect {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < value.length(); i++) {
       char ch = value.charAt(i);
-      if ((ch >= '0' && ch <= '9') || ch == '.' || ch == '+' || ch == '-') {
+      if ((ch >= '0' && ch <= '9') || ch == '.') {
         sb.append(ch);
       }
     }
