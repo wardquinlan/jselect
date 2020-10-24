@@ -25,7 +25,7 @@ import org.jsoup.select.Elements;
 
 public class JSelect {
   private static Log log = LogFactory.getFactory().getInstance(JSelect.class);
-  private static String version = "0.10";
+  private static String version = "0.20";
   
   public JSelect(String[] args) throws Exception {
     loadProperties();
@@ -45,6 +45,9 @@ public class JSelect {
     options.addOption(opt);
     opt = new Option("f", "filter", false, "apply a numeric filter");
     options.addOption(opt);
+    opt = new Option("c", "cookies", true, "sets one or more cookies (NAME=VALUE, comma separated)");
+    opt.setArgName("cookies");
+    options.addOption(opt);
     CommandLine cmd = null;
     try {
       CommandLineParser parser = new DefaultParser();
@@ -58,7 +61,7 @@ public class JSelect {
     log.debug("using url " + url);
     String selector = cmd.getOptionValue("selector").replace("%20", " ");
     log.debug("using selector " + selector);
-    String content = readContent(url, cmd.hasOption("echo-content"));
+    String content = readContent(url, cmd);
     Document doc = Jsoup.parse(content);
     Elements elements = doc.select(selector);
     if (elements.size() == 0) {
@@ -82,6 +85,15 @@ public class JSelect {
     System.out.println(value);
   }
 
+  private void setCookies(HttpURLConnection connection, CommandLine cmd) {
+    if (cmd.hasOption("cookies")) {
+      String[] cookies = cmd.getOptionValue("cookies").split(",");
+      for (String cookie: cookies) {
+        connection.addRequestProperty("Cookie", cookie);
+      }
+    }
+  }
+  
   private String filter(String value) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < value.length(); i++) {
@@ -93,23 +105,28 @@ public class JSelect {
     return sb.toString();
   }
   
-  private String readContent(String url, boolean echo) {
+  private String readContent(String url, CommandLine cmd) {
     BufferedReader reader = null;
     try {
       URL myurl = new URL(url);
       InputStream stream;
       if (url.startsWith("https")) {
         HttpsURLConnection connection = (HttpsURLConnection) myurl.openConnection();
+        setCookies(connection, cmd);
+        // connection.addRequestProperty("Cookie", "AspxAutoDetectCookieSupport=1");
         stream = connection.getInputStream();
       } else {
         HttpURLConnection connection = (HttpURLConnection) myurl.openConnection();
+        setCookies(connection, cmd);
+        // connection.addRequestProperty("Cookie", "AspxAutoDetectCookieSupport=1");
         stream = connection.getInputStream();
       }
+      
       reader = new BufferedReader(new InputStreamReader(stream));
       String line;
       StringBuffer sb = new StringBuffer();
       while ((line = reader.readLine()) != null) {
-        if (echo) {
+        if (cmd.hasOption("echo-content")) {
           System.out.println(line);
         }
         sb.append(line);
