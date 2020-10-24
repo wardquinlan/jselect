@@ -86,6 +86,12 @@ public class JSelect {
   }
 
   private void setCookies(HttpURLConnection connection, CommandLine cmd) {
+    // Note: Future:
+    // can also use String[] cookies = cmd.getOptionValues("cookie");
+    // where you would pass options like this:
+    // --cookie A=B --cookie C=D
+    // then cookies would be an array of {"A=B", "C=D"}
+    // @see: https://www.programcreek.com/java-api-examples/?class=org.apache.commons.cli.CommandLine&method=getOptionValues
     if (cmd.hasOption("cookies")) {
       String[] cookies = cmd.getOptionValue("cookies").split(",");
       for (String cookie: cookies) {
