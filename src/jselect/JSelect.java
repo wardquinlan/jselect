@@ -25,7 +25,7 @@ import org.jsoup.select.Elements;
 
 public class JSelect {
   private static Log log = LogFactory.getFactory().getInstance(JSelect.class);
-  private static String version = "0.21";
+  private static String version = "0.22";
   
   public JSelect(String[] args) throws Exception {
     loadProperties();
@@ -90,9 +90,14 @@ public class JSelect {
     if (cookies == null) {
       return;
     }
+    String value = "";
     for (String cookie: cookies) {
-      connection.addRequestProperty("Cookie", cookie);
+      if (!value.equals("")) {
+        value += "; ";
+      }
+      value += cookie;
     }
+    connection.addRequestProperty("Cookie", value);
   }
   
   private String filter(String value) {
