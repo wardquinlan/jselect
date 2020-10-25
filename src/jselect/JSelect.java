@@ -87,6 +87,9 @@ public class JSelect {
 
   private void setCookies(HttpURLConnection connection, CommandLine cmd) {
     String[] cookies = cmd.getOptionValues("cookie");
+    if (cookies == null) {
+      return;
+    }
     for (String cookie: cookies) {
       connection.addRequestProperty("Cookie", cookie);
     }
