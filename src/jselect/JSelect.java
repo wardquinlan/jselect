@@ -25,7 +25,7 @@ import org.jsoup.select.Elements;
 
 public class JSelect {
   private static Log log = LogFactory.getFactory().getInstance(JSelect.class);
-  private static String version = "0.20";
+  private static String version = "0.21";
   
   public JSelect(String[] args) throws Exception {
     loadProperties();
@@ -45,7 +45,7 @@ public class JSelect {
     options.addOption(opt);
     opt = new Option("f", "filter", false, "apply a numeric filter");
     options.addOption(opt);
-    opt = new Option("c", "cookies", true, "sets one or more cookies (NAME=VALUE, comma separated)");
+    opt = new Option("c", "cookie", true, "sets a cookie (multiple cookies supported)");
     opt.setArgName("cookies");
     options.addOption(opt);
     CommandLine cmd = null;
@@ -86,17 +86,9 @@ public class JSelect {
   }
 
   private void setCookies(HttpURLConnection connection, CommandLine cmd) {
-    // Note: Future:
-    // can also use String[] cookies = cmd.getOptionValues("cookie");
-    // where you would pass options like this:
-    // --cookie A=B --cookie C=D
-    // then cookies would be an array of {"A=B", "C=D"}
-    // @see: https://www.programcreek.com/java-api-examples/?class=org.apache.commons.cli.CommandLine&method=getOptionValues
-    if (cmd.hasOption("cookies")) {
-      String[] cookies = cmd.getOptionValue("cookies").split(",");
-      for (String cookie: cookies) {
-        connection.addRequestProperty("Cookie", cookie);
-      }
+    String[] cookies = cmd.getOptionValues("cookie");
+    for (String cookie: cookies) {
+      connection.addRequestProperty("Cookie", cookie);
     }
   }
   
@@ -119,12 +111,10 @@ public class JSelect {
       if (url.startsWith("https")) {
         HttpsURLConnection connection = (HttpsURLConnection) myurl.openConnection();
         setCookies(connection, cmd);
-        // connection.addRequestProperty("Cookie", "AspxAutoDetectCookieSupport=1");
         stream = connection.getInputStream();
       } else {
         HttpURLConnection connection = (HttpURLConnection) myurl.openConnection();
         setCookies(connection, cmd);
-        // connection.addRequestProperty("Cookie", "AspxAutoDetectCookieSupport=1");
         stream = connection.getInputStream();
       }
       
