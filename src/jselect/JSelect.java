@@ -46,7 +46,7 @@ public class JSelect {
     opt = new Option("f", "filter", false, "apply a numeric filter");
     options.addOption(opt);
     opt = new Option("c", "cookie", true, "sets a cookie (multiple cookies supported)");
-    opt.setArgName("cookies");
+    opt.setArgName("cookie");
     options.addOption(opt);
     CommandLine cmd = null;
     try {
@@ -144,6 +144,7 @@ public class JSelect {
   private void usage(Options options) {
     HelpFormatter formatter = new HelpFormatter();
     System.out.println("jselect version " + version);
+    System.out.println("Scrapes HTML and selects specific content using a CSS-style selector or attribute\n");
     formatter.printHelp("jselect", options);
   }
   
